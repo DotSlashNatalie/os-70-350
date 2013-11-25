@@ -7,7 +7,7 @@ void WriteStr(const char * str)
 	DWORD byteswritten;
 	int length = 0;
 	const char * cpyptr = str;
-	while(*cpyptr++)
+	while(*cpyptr++) // This doesn't work the way you would expect it
 		length++;
 	WriteFile(stdout2, str, length, &byteswritten, NULL);
 }
@@ -19,7 +19,7 @@ private:
 
 public:
 	FileWrapper(const char * file, DWORD access, DWORD creation) { this->_handle = CreateFileA(file, access, 0, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL); }
-	~FileWrapper() { CloseHandle(this->_handle); }
+	~FileWrapper() { CloseHandle(this->_handle); } // http://msdn.microsoft.com/en-us/library/windows/desktop/ms724211(v=vs.85).aspx
 	HANDLE getHandle() { return this->_handle; }
 };
 
@@ -52,7 +52,8 @@ int main(int argc, char * args[])
 	while(true)
 	{
 		// The buffer parameter is a void pointer which means it can take anything - in this case we just use a char array
-		ReadFile(src.getHandle(), buffer, 20, &numberofbytesread, NULL);
+		// http://msdn.microsoft.com/en-us/library/windows/desktop/aa365467(v=vs.85).aspx
+		ReadFile(src.getHandle(), buffer, 20, &numberofbytesread, NULL); // http://stackoverflow.com/questions/12655120/readfile-function-from-win32-api
 		if (numberofbytesread == 0)
 			break;
 		WriteFile(dst.getHandle(), buffer, numberofbytesread, &numberofbyteswritten, NULL);
