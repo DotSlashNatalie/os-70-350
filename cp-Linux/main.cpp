@@ -18,7 +18,7 @@ private:
 	int _handle;
 
 public:
-	FileWrapper(const char * file, int flags) { this->_handle = open(file, flags); }
+	FileWrapper(const char * file, int flags, mode_t mode = 0700) { this->_handle = open(file, flags, mode); }
 	~FileWrapper() { close(this->_handle); }
 	int getHandle() { return this->_handle; }
 };
