@@ -12,6 +12,6 @@ if [ "$disto" == "Debian" -o "$disto" == "Ubuntu" ]
 then
 	apt-get $packages
 else
-	yum install $packages
+	yum $packages
 fi
 
