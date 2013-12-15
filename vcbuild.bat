@@ -13,7 +13,5 @@ if exist "c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" (
 	goto compile
 )
 :compile
-cl.exe %1.c > nul
-%1.exe
+cl.exe %1.c
 del %1.obj
-pause

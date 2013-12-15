@@ -6,7 +6,7 @@ void *print_message_function( void *ptr )
 {
 	int i;
 	for(i = 0; i < 10; i++)
-		printf("%i", i);
+		printf("%i\n", i);
 }
 
 int main()
