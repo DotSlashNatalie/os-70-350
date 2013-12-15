@@ -1,1 +1,3 @@
-../vcbuild.bat main
+call ../vcbuild.bat main
+main.exe
+pause
