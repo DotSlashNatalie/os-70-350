@@ -13,5 +13,5 @@ if exist "c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" (
 	goto compile
 )
 :compile
-cl.exe /clr %1.cpp
+cl.exe /clr /D WIN32 /I"..\ext\include" %1.cpp %2
 del %1.obj
