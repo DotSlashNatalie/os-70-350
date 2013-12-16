@@ -31,8 +31,8 @@ void servermain(ipstmserver& svr)
                     string host = phostbyaddr(client.get_ip());
                     if (isempty(host))
                         host = iptostring(client.get_ip());
-
-					client.putline("Hello, the current timestamp is - " + itostring(now()));
+					int timestamp = (now() - _unixepoch) / 1000;
+					client.putline("Hello, the current timestamp is - " + itostring(timestamp));
                     client.flush();
 
                     pout.putf("%t  greeting received from %s (%a)\n",
