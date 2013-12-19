@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gcc -o main main.cpp
+g++ -o main main.cpp
 ./main test.txt test2.txt
