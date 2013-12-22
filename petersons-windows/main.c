@@ -22,9 +22,8 @@ DWORD WINAPI produce(void* data) {
 	{
 		flag[0] = true;
 		turn = 1;
-		//while (counter == BUFFER_SIZE - 1); // make sure the buffer doesn't overflow
 		while (flag[1] && turn == 1);
-		if (counter == BUFFER_SIZE - 1)
+		if (counter == BUFFER_SIZE - 1) // make sure the buffer doesn't overflow
 		{
 			continue;
 			flag[0] = false;
@@ -44,9 +43,8 @@ DWORD WINAPI consume(void* data) {
 	{
 		flag[1] = true;
 		turn = 0;
-		//while (counter == -1); // make sure there is content to consume
 		while (flag[0] && turn == 0);
-		if (counter == -1) // producer hasn't produced
+		if (counter == -1) // producer hasn't produced - make sure there is content to consume
 		{
 			flag[1] = false;
 			continue;
