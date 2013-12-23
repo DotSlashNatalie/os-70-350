@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gcc -o main main.c
+gcc -o main -pthread main.c
 ./main

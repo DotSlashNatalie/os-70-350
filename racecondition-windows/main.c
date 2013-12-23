@@ -21,12 +21,14 @@ DWORD WINAPI produce(void* data) {
 }
 
 DWORD WINAPI consume(void* data) {
+	int i = 0;
 	while(1)
 	{
 		while (counter == -1);
 		if (buffer[counter] == 0)
 		{
-			printf("%i\n", buffer[counter]);
+			for(i = 0; i < BUFFER_SIZE; i++)
+				printf("%i\n", buffer[i]);
 			printf("Attempting to consume an element that was already consumed counter = %i\n", counter);
 			exit(1);
 		}

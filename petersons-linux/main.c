@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include <windows.h>
 
 #define BUFFER_SIZE 10
 
@@ -16,7 +15,7 @@ volatile int buffer[BUFFER_SIZE];
 volatile int turn;
 volatile int flag[2];
 
-DWORD WINAPI produce(void* data) {
+void * produce(void* data) {
 	srand (time(NULL));
 	while (true)
 	{
@@ -26,7 +25,7 @@ DWORD WINAPI produce(void* data) {
 		if (counter == BUFFER_SIZE - 1) // make sure the buffer doesn't overflow
 		{
 			flag[0] = false;
-			Sleep(500); // Let the producer catch up
+			sleep(5);
 			continue;
 		}
 		
@@ -39,7 +38,7 @@ DWORD WINAPI produce(void* data) {
 	}
 }
 
-DWORD WINAPI consume(void* data) {
+void * consume(void* data) {
 	int i = 0;
 	while(true)
 	{
@@ -62,20 +61,22 @@ DWORD WINAPI consume(void* data) {
 		buffer[counter] = 0;
 		counter--;
 		flag[1] = false;
-		Sleep(50);
+		sleep(1);
 	}
 }
 
 int main() {
 	int i;
-	HANDLE thread1, thread2;
+	pthread_t thread1, thread2;
+	int  iret1, iret2;
 	for(i = 0; i < BUFFER_SIZE; i++)
 		buffer[i] = -1;
 	flag[0] = true;
 	flag[1] = true;
 	
-	thread1 = CreateThread(NULL, 0, produce, NULL, 0, NULL);
-	thread2 = CreateThread(NULL, 0, consume, NULL, 0, NULL);
-	WaitForSingleObject(thread1, INFINITE );
-	WaitForSingleObject(thread2, INFINITE );
+	iret1 = pthread_create( &thread1, NULL, produce, NULL);
+	iret2 = pthread_create( &thread2, NULL, consume, NULL);
+	
+	pthread_join( thread1, NULL);
+    pthread_join( thread2, NULL);
 }
