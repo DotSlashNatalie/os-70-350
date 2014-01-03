@@ -1,10 +1,13 @@
 #include <ptypes/ptypes.h>
 #include <ptypes/pasync.h>
 #include <ptypes/pstreams.h>
+#include <vector>
 
 USING_PTYPES
 
 #define MAX 10
+
+std::vector<string> output_s;
 
 // Inspired on http://pages.cs.wisc.edu/~remzi/OSTEP/threads-monitors.pdf
 class BoundedBuffer
@@ -35,6 +38,7 @@ BoundedBuffer() : fullEntries(0), fill(0), use(0) { empty = new trigger(true, fa
 		if (fullEntries == 0)
 			full->wait();
 		int tmp = buffer[use];
+		buffer[use] = -1;
 		output("Consume " + itostring(tmp));
 		use = (use + 1) % MAX;
 		fullEntries--;
@@ -44,9 +48,10 @@ BoundedBuffer() : fullEntries(0), fill(0), use(0) { empty = new trigger(true, fa
 	
 	void output(string s)
 	{
+		// Performing console I/O from a thread causes strange behavior
+		// Even with a mutex lock
 		scopelock l(m_lock);
-		pout.put(s);
-		pout.puteol();
+		output_s.push_back(s);
 	}
 	
 };
@@ -87,4 +92,9 @@ int main()
 	
 	t1.waitfor();
 	t2.waitfor();
+	for(size_t i = 0; i < output_s.size(); i++)
+	{
+		pout.put(output_s[i]);
+		pout.put("\n");
+	}
 }
