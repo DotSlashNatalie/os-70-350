@@ -12,8 +12,7 @@ void * produce(void* data) {
 	while (1)
 	{
 		while (counter == BUFFER_SIZE - 1);
-		
-		buffer[counter + 1] = rand() % 20 + 1; // yes I know rand is not thread safe - I just need a way to demonstrate a producing/consuming problem - using the same number doesn't help.
+		buffer[counter + 1] = rand() % 20 + 1;
 		printf("PRODUCER value = %i counter = %i\n", buffer[counter + 1], counter + 1);
 		counter++;
 	}
@@ -23,12 +22,6 @@ void * consume(void* data) {
 	while(1)
 	{
 		while (counter == -1);
-		if (buffer[counter] == 0)
-		{
-			printf("%i\n", buffer[counter]);
-			printf("Attempting to consume an element that was already consumed counter = %i\n", counter);
-			exit(1);
-		}
 		printf("CONSUMER value = %i counter = %i\n", buffer[counter], counter);
 		buffer[counter] = 0;
 		counter--;
