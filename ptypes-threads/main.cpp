@@ -1,9 +1,6 @@
 #include <ptypes/pasync.h>
 #include <stdio.h>
 
-#pragma comment(lib, "../ext/libs/ptypes.lib")
-#pragma comment(lib, "user32.lib")
-
 USING_PTYPES
 
 class threadtest : public thread

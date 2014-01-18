@@ -13,5 +13,5 @@ if exist "c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" (
 	goto compile
 )
 :compile
-cl.exe %1.c
+cl.exe /D "WIN32" /D "_WINDOWS" %1.c kernel32.lib user32.lib
 del %1.obj
