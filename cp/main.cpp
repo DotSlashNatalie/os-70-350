@@ -1,4 +1,7 @@
 #include <Windows.h>
+#include <string>
+#include <vector>
+
 
 void WriteStr(const char * str)
 {
@@ -34,6 +37,7 @@ int main(int argc, char * args[])
 	
 	// Open the source
 	// A little RAII
+	{
 	FileWrapper src(args[1], GENERIC_READ, OPEN_EXISTING);
 	if (GetLastError() == ERROR_FILE_NOT_FOUND)
 	{
@@ -58,6 +62,13 @@ int main(int argc, char * args[])
 			break;
 		WriteFile(dst.getHandle(), buffer, numberofbytesread, &numberofbyteswritten, NULL);
 	}
+	}
 	
+	std::vector<wchar_t> wstr;
+	std::string x = args[1];
+	wstr.resize(x.size() + 1);
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, &wstr[0], x.size() + 1, x.c_str(), _RUNCATE
+	DeleteFileA(args[1]);
 	return 0;
 }
