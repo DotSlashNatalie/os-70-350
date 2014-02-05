@@ -1,17 +1,17 @@
 #include <stdio.h>
+#include <pthread.h>
 
 #define LOOP 20000
 
-volatile int counter = -1;
 volatile long gvar = 0;
 
-DWORD WINAPI produce(void* data) {
+void * produce(void* data) {
 	int i = 0;
 	for (i = 0; i < LOOP; i++)
 		gvar++;
 }
 
-DWORD WINAPI consume(void* data) {
+void * consume(void* data) {
 	int i = 0;
 	for (i = 0; i < LOOP; i++)
 		gvar--;
@@ -26,5 +26,5 @@ int main() {
 	
 	pthread_join( thread1, NULL);
     pthread_join( thread2, NULL);
-	printf("gvar = %i\n", gvar);
+	printf("gvar = %lu\n", gvar);
 }
