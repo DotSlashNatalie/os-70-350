@@ -2,12 +2,14 @@
 #include <ptypes/pasync.h>
 #include <ptypes/pstreams.h>
 #include <vector>
+#include <windows.h>
 
 USING_PTYPES
 
-#define MAX 10
+#define MAX 100
 
 std::vector<string> output_s;
+std::vector<string> output_p;
 
 // Inspired on http://pages.cs.wisc.edu/~remzi/OSTEP/threads-monitors.pdf
 class BoundedBuffer
@@ -15,15 +17,20 @@ class BoundedBuffer
 private:
 	int buffer[MAX];
 	int fill, use;
-	int fullEntries;
+	unsigned int fullEntries;
 	trigger * empty;
 	trigger * full;
 	mutex m_lock;
 	
 	
 public:
-BoundedBuffer() : fullEntries(0), fill(0), use(0) { empty = new trigger(true, false); full = new trigger(true, false); }
+BoundedBuffer() : fullEntries(0), fill(0), use(0) { fillbb(); empty = new trigger(true, false); full = new trigger(true, false); }
 ~BoundedBuffer() { delete empty; delete full; }
+	void fillbb()
+	{
+		for(int i = 0; i < MAX; i++)
+			buffer[i] = -2;
+	}
 	void produce(int element) {
 		if (fullEntries == MAX)
 			empty->wait();
@@ -35,8 +42,9 @@ BoundedBuffer() : fullEntries(0), fill(0), use(0) { empty = new trigger(true, fa
 	}
 	
 	int consume() {
-		if (fullEntries == 0)
+		while (fullEntries == 0 || buffer[use] == -2)
 			full->wait();
+
 		int tmp = buffer[use];
 		buffer[use] = -1;
 		output("Consume " + itostring(tmp));
@@ -62,7 +70,7 @@ class threadtest1 : public thread
 {
 protected:
 	virtual void execute() {
-		for(int i = 0; i < MAX; i++)
+		for(int i = 0; i < MAX + 30; i++)
 			bb.produce(i);
 	}
 	virtual void cleanup() { }
@@ -74,7 +82,7 @@ class threadtest2 : public thread
 {
 protected:
 	virtual void execute() {
-		for(int i = 0; i < MAX; i++)
+		for(int i = 0; i < MAX + 30; i++)
 			bb.consume();
 	}
 	virtual void cleanup() { }
@@ -87,8 +95,8 @@ int main()
 	threadtest1 t1;
 	threadtest2 t2;
 	
-	t1.start();
 	t2.start();
+	t1.start();
 	
 	t1.waitfor();
 	t2.waitfor();
@@ -97,4 +105,5 @@ int main()
 		pout.put(output_s[i]);
 		pout.put("\n");
 	}
+
 }
