@@ -68,7 +68,6 @@ int main(int argc, char * args[])
 	std::string x = args[1];
 	wstr.resize(x.size() + 1);
 	size_t convertedChars = 0;
-	mbstowcs_s(&convertedChars, &wstr[0], x.size() + 1, x.c_str(), _RUNCATE
-	DeleteFileA(args[1]);
+	mbstowcs_s(&convertedChars, &wstr[0], x.size() + 1, x.c_str(), _TRUNCATE);
 	return 0;
 }
