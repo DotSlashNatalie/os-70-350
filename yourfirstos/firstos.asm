@@ -9,24 +9,41 @@ start:
 	mov ax, 07C0h		; Set data segment to where we're loaded
 	mov ds, ax
 
-
+	mov     ax, 12h
+	int     10h
 	mov si, text_string	; Put string position into SI
+	mov bl, 3
 	call print_string	; Call our string-printing routine
+	
 
 	jmp $			; Jump here - infinite loop!
 
 
 	
 text_string db 'This is my cool new Operating System!', 0
+counter db 0
 
 print_string:			; Routine: output string in SI to screen
 	mov ah, 0Eh		; int 10h 'print char' function
 
 .repeat:
 	lodsb			; Get character from string
+	
+	
+	cmp byte [counter], 1
+	jle .skipcolor
+	mov bl, 4
+.skipcolor:
+
 	cmp al, 0
 	je .done		; If char is zero, end of string
 	int 10h			; Otherwise, print it
+	
+	mov dx, [counter]
+	inc dx
+	mov [counter], dx
+	;add counter, 1
+
 	jmp .repeat
 
 .done:
